@@ -25,6 +25,8 @@ void setup() {
   delay(1000);
   interfazMenu.configurarMenuPrincipal();
   oldPosition = myEncoder.read();
+  //interfazMenu._menuPrincipal.update();
+  sys.update();
 }
 
 void selectOption(){
@@ -38,11 +40,12 @@ void loop() {
   long newPosition = myEncoder.read();
   if (newPosition != oldPosition) {
     if (newPosition > oldPosition)
-      interfazMenu._menuPrincipal.switch_focus(false);
+      sys.switch_focus(false);
     else
-      interfazMenu._menuPrincipal.switch_focus(true);
+      sys.switch_focus(true);
     
     oldPosition = newPosition;
+    sys.update();
     //Serial.println(newPosition);
     // lcd.setCursor(0, 0);
     // lcd.print(newPosition);

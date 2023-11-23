@@ -37,10 +37,6 @@ private:
   int _encoderButtonPin;
   LiquidCrystal_I2C &_lcd;
   LiquidSystem &_sys;
-  static void fn_monitorizar();
-  static void fn_controlTemp();
-  static void fn_controlLuz();
-  static void fn_grabar();
 
 };
 

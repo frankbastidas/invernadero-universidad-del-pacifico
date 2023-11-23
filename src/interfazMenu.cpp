@@ -29,10 +29,10 @@ void InterfazMenu::configurarMenuPrincipal()
     // Add more "lines" than the display has. The extra will be scrolled.
     LiquidScreen screenMenuPrincipal(line1, line2, line3, line4);
     // Attaching a function to the lines is required for scrolling to work.
-    line1.attach_function(1, &InterfazMenu::fn_monitorizar);
-    line2.attach_function(1, &InterfazMenu::fn_controlTemp);
-    line3.attach_function(1, &InterfazMenu::fn_controlLuz);
-    line4.attach_function(1, &InterfazMenu::fn_grabar);
+    line1.attach_function(1, &InterfazMenu::blankFunction);
+    line2.attach_function(1, &InterfazMenu::blankFunction);
+    line3.attach_function(1, &InterfazMenu::blankFunction);
+    line4.attach_function(1, &InterfazMenu::blankFunction);
     
     screenMenuPrincipal.set_displayLineCount(2);
 
@@ -43,8 +43,8 @@ void InterfazMenu::configurarMenuPrincipal()
     // Set the number of decimal places for a "line".
     //line1.set_decimalPlaces(5);
 
-    _menuPrincipal.update();
-    //_sys.add_menu(_menuPrincipal);
+    //_menuPrincipal.update();
+    _sys.add_menu(_menuPrincipal);
     //_menuPrincipal.update();
 
 }
@@ -62,7 +62,7 @@ void InterfazMenu::configurarMenuMonitorizar(){
     _menuMonitorizar.update();
 }
 
-void InterfazMenu::configurarMenuMonitorizar(){
+void InterfazMenu::configurarMenuControlTemperatura(){
 
     LiquidLine line1(1, 0, "T: ", "24");
     LiquidLine line2(8, 1, "H: ","10");
@@ -79,7 +79,19 @@ void InterfazMenu::blankFunction() {
       return;
   }
 
-void InterfazMenu::fn_monitorizar() {
-      return;
-  }
+// void InterfazMenu::fn_monitorizar() {
+//       return;
+//   }
+
+// void InterfazMenu::fn_controlTemp() {
+//       return;
+//   }
+
+// void InterfazMenu::fn_controlLuz() {
+//       return;
+//   }
+
+// void InterfazMenu::fn_grabar() {
+//       return;
+//}
 
