@@ -39,9 +39,14 @@ void setup() {
 
   // interfazMenu.line12.attach_function(1, fn_Monitorizar);
   oldPosition = myEncoder.read();
+<<<<<<< HEAD
   // interfazMenu.showMenuPrincipal();
   // interfazMenu._menuInvernadero.change_screen(1);
   interfazMenu.actualizar();
+=======
+  //interfazMenu._menuPrincipal.update();
+  sys.update();
+>>>>>>> 38e2b8392dbc28266c37d88da3e3a09f458d195f
 }
 
 void selectOption(){
@@ -56,11 +61,24 @@ void loop() {
   long newPosition = myEncoder.read();
   if (newPosition != oldPosition) {
     if (newPosition > oldPosition)
+<<<<<<< HEAD
       interfazMenu.moverFlecha(true);
     else
       interfazMenu.moverFlecha(false);
     
     oldPosition = newPosition;
     interfazMenu.actualizar();
+=======
+      sys.switch_focus(false);
+    else
+      sys.switch_focus(true);
+    
+    oldPosition = newPosition;
+    sys.update();
+    //Serial.println(newPosition);
+    // lcd.setCursor(0, 0);
+    // lcd.print(newPosition);
+    
+>>>>>>> 38e2b8392dbc28266c37d88da3e3a09f458d195f
   }
 }
