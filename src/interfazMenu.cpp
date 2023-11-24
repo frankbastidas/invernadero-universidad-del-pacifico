@@ -26,20 +26,12 @@ void InterfazMenu::configurarMenuPrincipal()
     // LiquidScreen screenMenuPrincipal(line12, line2, line3, line4);
     screenMenuPrincipal = LiquidScreen(line1, line2, line3, line4);
     // Attaching a function to the lines is required for scrolling to work.
-<<<<<<< HEAD
     //line1.attach_function(1, reinterpret_cast<void(*)()>(&InterfazMenu::fn_Monitorizar));
     line1.attach_function(1, &blankFunction);
     line2.attach_function(1, &blankFunction);
     line3.attach_function(1, &blankFunction);
     line4.attach_function(1, &blankFunction);
 
-=======
-    line1.attach_function(1, &InterfazMenu::blankFunction);
-    line2.attach_function(1, &InterfazMenu::blankFunction);
-    line3.attach_function(1, &InterfazMenu::blankFunction);
-    line4.attach_function(1, &InterfazMenu::blankFunction);
-    
->>>>>>> 38e2b8392dbc28266c37d88da3e3a09f458d195f
     screenMenuPrincipal.set_displayLineCount(2);
 
     _menuInvernadero.add_screen(screenMenuPrincipal);
@@ -52,11 +44,6 @@ void InterfazMenu::configurarMenuPrincipal()
     // Set the number of decimal places for a "line".
     // line1.set_decimalPlaces(5);
 
-<<<<<<< HEAD
-=======
-    //_menuPrincipal.update();
-    _sys.add_menu(_menuPrincipal);
->>>>>>> 38e2b8392dbc28266c37d88da3e3a09f458d195f
     //_menuPrincipal.update();
     
     //_menuPrincipal.update();
@@ -142,15 +129,8 @@ void InterfazMenu::configurarMenuControlTemperatura()
     _menuMonitorizar.update();
 }
 
-<<<<<<< HEAD
 void InterfazMenu::blankFunction()
 {
-=======
-void InterfazMenu::configurarMenuControlTemperatura(){
-
-    LiquidLine line1(1, 0, "T: ", "24");
-    LiquidLine line2(8, 1, "H: ","10");
->>>>>>> 38e2b8392dbc28266c37d88da3e3a09f458d195f
     
     return;
 }
@@ -162,7 +142,6 @@ void InterfazMenu::fn_Monitorizar()
     return;
 }
 
-<<<<<<< HEAD
 void InterfazMenu::actualizar()
 {
     _menuInvernadero.update();
@@ -172,23 +151,6 @@ void InterfazMenu::moverFlecha(bool mover)
 {
     _menuInvernadero.switch_focus(mover);
 }
-=======
-// void InterfazMenu::fn_monitorizar() {
-//       return;
-//   }
-
-// void InterfazMenu::fn_controlTemp() {
-//       return;
-//   }
-
-// void InterfazMenu::fn_controlLuz() {
-//       return;
-//   }
-
-// void InterfazMenu::fn_grabar() {
-//       return;
-//}
->>>>>>> 38e2b8392dbc28266c37d88da3e3a09f458d195f
 
 
 void InterfazMenu::showMenuMonitorizar()

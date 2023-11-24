@@ -82,7 +82,7 @@ const uint8_t MAX_MENUS = 8; ///< @note Default: 8
  * indicator will go from the last focusable line directly to the first
  * focusable line without disappearing (i.e. it will be always visible).
  */
-#define LM_FOCUS_INDICATOR_GHOSTING true ///< @note Default: true
+#define LM_FOCUS_INDICATOR_GHOSTING false ///< @note Default: true
 
 // Turns the debugging messages on or off.
 #define LIQUIDMENU_DEBUG false ///< @note Default: false
