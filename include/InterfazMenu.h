@@ -11,7 +11,7 @@
 
 class InterfazMenu {
 public:
-  InterfazMenu(int encoderPinA, int encoderPinB, 
+  InterfazMenu(Encoder &encoder, 
   int encoderButtonPin, LiquidSystem &sys, LiquidCrystal_I2C &lcd);
   
   void configurarMenuPrincipal();
@@ -22,25 +22,47 @@ public:
   void mensajeInicial();
   // Used for attaching something to the lines, to make them focusable.
   static void blankFunction();
-  
+  void fn_Monitorizar();
+
+  void showMenuMonitorizar();
+  void showMenuPrincipal();
+
+  void configMenus();
+
+ /// Actualizar sistema de menus
+  /**
+  Actualiza los valores de las variables a mostrar en cada
+  linea, pantalla y menu del sistema.
+  */
+  void actualizar();
+
+  /// Mover flecha
+  /**
+  Mueve la flecha hacia la siguiente linea o la anterior
+  deacuerdo al parametro "mover".
+
+  @param mover - true para el siguiente, false para el anterior
+  */
+  void moverFlecha(bool mover);
+
 
   LiquidMenu _menuPrincipal;
   LiquidMenu _menuMonitorizar;
   LiquidMenu _menuControlTemp;
   LiquidMenu _menuControlLuz;
   LiquidMenu _menuGrabar;
+  LiquidMenu _menuInvernadero;
+
+  LiquidScreen screenMenuPrincipal;
+  LiquidScreen screenMenuMonitorizar;
   
+  LiquidLine line12;
 
 private:
-  int _encoderPinA;
-  int _encoderPinB;
+  Encoder &_encoder;
   int _encoderButtonPin;
   LiquidCrystal_I2C &_lcd;
   LiquidSystem &_sys;
-  static void fn_monitorizar();
-  static void fn_controlTemp();
-  static void fn_controlLuz();
-  static void fn_grabar();
 
 };
 

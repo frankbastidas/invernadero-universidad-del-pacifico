@@ -327,9 +327,10 @@ class LiquidLine {
   friend class LiquidScreen;
 
 public:
+
   /// @name Constructors
   ///@{
-
+  LiquidLine(){}
   /// The main constructor.
   /**
   This is the main constructor that gets called every time.
@@ -479,6 +480,8 @@ public:
   */
   bool attach_function(uint8_t number, void (*function)(void));
 
+  template <typename T>
+  bool attach_function(uint8_t number, T function);
   /// Sets the decimal places for floating point variables.
   /**
 

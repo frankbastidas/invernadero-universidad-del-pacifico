@@ -14,55 +14,53 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 // Configuración de la interfaz del menú
 LiquidSystem sys;
-InterfazMenu interfazMenu(myEncoder.read(), myEncoder.read(), encoderButtonPin, sys, lcd);
+InterfazMenu interfazMenu(myEncoder, encoderButtonPin, sys, lcd);
+
+void fn_Monitorizar()
+{
+    //interfazMenu.moverFlecha(true);
+    //_sys.change_menu(_menuMonitorizar);
+    interfazMenu.showMenuMonitorizar();
+    // return;
+}
 
 void setup() {
-  // lcd.begin(16, 2);
-  lcd.init();
+  lcd.begin(16,2);
+  //lcd.init();
   pinMode(encoderButtonPin, INPUT_PULLUP);
 
-  interfazMenu.mensajeInicial();
+  //interfazMenu.mensajeInicial();
   delay(1000);
-  interfazMenu.configurarMenuPrincipal();
+  
+  // interfazMenu.configurarMenuPrincipal();
+  // interfazMenu.configurarMenuMonitorizar();
+
+  interfazMenu.configMenus();
+
+  // interfazMenu.line12.attach_function(1, fn_Monitorizar);
   oldPosition = myEncoder.read();
+  // interfazMenu.showMenuPrincipal();
+  // interfazMenu._menuInvernadero.change_screen(1);
+  interfazMenu.actualizar();
 }
 
 void selectOption(){
   if(digitalRead(encoderButtonPin)==LOW){
-    interfazMenu._menuPrincipal.call_function(1);
+    sys.call_function(1);
     delay(500);
   }
 }
 
 void loop() {
+  selectOption();
   long newPosition = myEncoder.read();
   if (newPosition != oldPosition) {
     if (newPosition > oldPosition)
-      interfazMenu._menuPrincipal.switch_focus(false);
+      interfazMenu.moverFlecha(true);
     else
-      interfazMenu._menuPrincipal.switch_focus(true);
+      interfazMenu.moverFlecha(false);
     
     oldPosition = newPosition;
-    //Serial.println(newPosition);
-    // lcd.setCursor(0, 0);
-    // lcd.print(newPosition);
-    
+    interfazMenu.actualizar();
   }
-  
-
-  // encoderPos = myEncoder.read();
-  // encoderButtonState = digitalRead(encoderButtonPin);
-
-  // if (encoderPos != lastEncoderPos) {
-  //   sys.update();
-  // }
-
-  // if (encoderButtonState != lastEncoderButtonState) {
-  //   if (encoderButtonState == LOW) {
-  //     //sys.next();
-  //   }
-  // }
-
-  // lastEncoderPos = encoderPos;
-  // lastEncoderButtonState = encoderButtonState;
 }

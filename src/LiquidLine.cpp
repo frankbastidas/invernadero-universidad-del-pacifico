@@ -47,6 +47,25 @@ bool LiquidLine::attach_function(uint8_t number, void (*function)(void)) {
 	}
 }
 
+template <typename T>
+bool LiquidLine::attach_function(uint8_t number, T function) {
+    DEBUG(F("LLine ")); print_me(reinterpret_cast<uintptr_t>(this));
+
+    DEBUG(F("Attach function ")); DEBUG(number);
+
+    if (number <= MAX_FUNCTIONS) {
+        _function[number - 1] = reinterpret_cast<void (*)()>(function);
+        _focusable = true;
+
+        DEBUGLN(F(""));
+        return true;
+    } else {
+        DEBUGLN(F(" failed, edit LiquidMenu_config.h to allow for more functions"));
+        return false;
+    }
+}
+
+
 void LiquidLine::set_decimalPlaces(uint8_t decimalPlaces) {
 	_floatDecimalPlaces = decimalPlaces;
 }
