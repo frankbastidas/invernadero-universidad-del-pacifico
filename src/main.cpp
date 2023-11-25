@@ -63,8 +63,8 @@ LiquidLine CtrlTemp_L3(1, 1, "Temperatura:", temp_ctrl, "\337");
 
 //menuCtrlLuz
 LiquidLine CtrlLuz_L1(1, 0, "Menu Principal");
-LiquidLine CtrlLuz_L2(1, 1, "Ctrl Luz: ", luz_estado_ctrl_text);
-LiquidLine CtrlLuz_L3(1, 1, "Luz:", luz_estado_ctrl, "\337");
+LiquidLine CtrlLuz_L2(1, 1, "Ctrl Luz: ", "Des");
+// LiquidLine CtrlLuz_L3(1, 1, "Luz:", luz_estado_ctrl, "\337");
 
 // //menuCtrlTemperatura_ctrlStatus
 // LiquidLine CtrlLuz_2_L1(1, 0, "Ctrl Luz:");
@@ -77,8 +77,8 @@ LiquidLine CtrlLuz_L3(1, 1, "Luz:", luz_estado_ctrl, "\337");
 //menuGrabar
 LiquidLine Grabar_L1(1, 0, "Menu Principal");
 // LiquidLine Grabar_L2(1, 1, "Estado Rec:", luz_estado_ctrl_text);
-LiquidLine Grabar_L3(1, 1, "Temp Rec: ", luz_estado_ctrl_text, "\337");
-LiquidLine Grabar_L4(1, 1, "Hum Rec:  ", luz_estado_ctrl_text, "%");
+LiquidLine Grabar_L3(1, 1, "Temp Rec: ", "Des", "\337");
+LiquidLine Grabar_L4(1, 1, "Hum Rec:  ", "Des", "%");
 
 
 LiquidMenu menuInvernadero (lcd, pantallaMenuPrincipal);
@@ -309,11 +309,11 @@ void setup() {
   //menuCtrlLuz
   pantallaCtrlLuz.add_line(CtrlLuz_L1);
   pantallaCtrlLuz.add_line(CtrlLuz_L2);
-  pantallaCtrlLuz.add_line(CtrlLuz_L3);
+  // pantallaCtrlLuz.add_line(CtrlLuz_L3);
 
   CtrlLuz_L1.attach_function(1, fn_principal);
   CtrlLuz_L2.attach_function(1, blankFunction);
-  CtrlLuz_L3.attach_function(1, blankFunction);
+  // CtrlLuz_L3.attach_function(1, blankFunction);
 
   pantallaCtrlLuz.set_focusPosition(Position::LEFT);
   pantallaCtrlLuz.set_displayLineCount(2);
