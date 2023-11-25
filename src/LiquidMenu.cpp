@@ -43,7 +43,7 @@ LiquidMenu::LiquidMenu(){}
 
 LiquidMenu::LiquidMenu(DisplayClass &liquidCrystal, uint8_t startingScreen)
   : _p_liquidCrystal(&liquidCrystal), _screenCount(0),
-    _currentScreen(startingScreen - 1) {
+    _currentScreen(startingScreen - 1), _previusScreen(startingScreen - 1) {
 }
 
 LiquidMenu::LiquidMenu(DisplayClass &liquidCrystal, LiquidScreen &liquidScreen,
@@ -127,6 +127,18 @@ void LiquidMenu::previous_screen() {
     } else {
       _currentScreen = _screenCount - 1;
     }
+  } while (_p_liquidScreen[_currentScreen]->_hidden == true);
+  update();
+  DEBUG(F("Switched to the previous screen (")); DEBUG(_currentScreen); DEBUGLN(F(")"));
+}
+
+void LiquidMenu::previous_screen2() {
+  _p_liquidCrystal->clear();
+  do {
+    uint8_t prev_current = _currentScreen;
+    _currentScreen = _previusScreen;
+    _previusScreen = prev_current;
+
   } while (_p_liquidScreen[_currentScreen]->_hidden == true);
   update();
   DEBUG(F("Switched to the previous screen (")); DEBUG(_currentScreen); DEBUGLN(F(")"));

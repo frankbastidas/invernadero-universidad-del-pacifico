@@ -901,6 +901,9 @@ public:
   /// Switches to the previous screen.
   void previous_screen();
 
+  /// Switches to the previous screen. nueva version
+  void previous_screen2();
+
   /// Switches to the previous screen.
   /**
   @note Prefix decrement operator overloading.
@@ -1054,6 +1057,7 @@ private:
   LiquidScreen *_p_liquidScreen[MAX_SCREENS]; ///< The LiquidScreen objects
   uint8_t _screenCount; ///< Count of the LiquidScreen objects
   uint8_t _currentScreen;
+  uint8_t _previusScreen;
 };
 
 

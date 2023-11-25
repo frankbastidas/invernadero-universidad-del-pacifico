@@ -17,14 +17,16 @@ unsigned int temp_ctrl = 0;
 unsigned int hum_ctrl = 0;
 bool temp_estado_ctrl = false;
 char temp_estado_ctrl_text[4]; // {'O', 'F', 'F', '\0'}
-char string_on[] = "ON";
-char string_off[] = "OFF";
+char string_on[] = "Act";
+char string_off[] = "Des";
 
 // ------ Configuración de Menus/submenus
 //Menus
 LiquidScreen pantallaMenuPrincipal;
 LiquidScreen pantallaMenuMonitorizar;
 LiquidScreen pantallaCtrlTemperatura;
+LiquidScreen pantallaCtrlTemperatura_ctrlStatus;
+LiquidScreen pantallaCtrlTemperatura_ctrlTemp;
 LiquidScreen pantallaCtrlLuz;
 LiquidScreen pantallaGrabar;
 
@@ -32,7 +34,7 @@ LiquidScreen pantallaGrabar;
 LiquidLine Prin_L1(1, 0, "Monitorizar");
 LiquidLine Prin_L2(1, 1, "Control Temp");
 LiquidLine Prin_L3(1, 0, "Control Luz");
-LiquidLine Prin_L4(1, 1, "Grabar");
+LiquidLine Prin_L4(1, 1, "Grabar Datos");
 
 //menuMonitorizar
 LiquidLine Mon_L1_1(0, 0, "T:");
@@ -42,12 +44,21 @@ LiquidLine Mon_L1_4(10, 0, hum_sen, "/", hum_ctrl, "%");
 LiquidLine Mon_L2_1(0, 1, "CtrlTemp:  ", temp_estado_ctrl_text);
 
 //menuCtrlTemperatura
-// LiquidLine CtrlTemp_L1(1, 0, "Menu Principal");
-// LiquidLine CtrlTemp_L2(1, 1, "Estado Ctrl:   ", temp_estado_ctrl);
+LiquidLine CtrlTemp_L1(1, 0, "Menu Principal");
+LiquidLine CtrlTemp_L2(1, 1, "Ctrl Temp: ", temp_estado_ctrl_text);
+LiquidLine CtrlTemp_L3(1, 1, "Temperatura:", temp_ctrl, "\337");
+
+//menuCtrlTemperatura_ctrlStatus
+LiquidLine CtrlTemp_2_L1(1, 0, "Ctrl Temp:");
+LiquidLine CtrlTemp_2_L2(1, 1, temp_estado_ctrl_text);
+
+//menuCtrlTemperatura_ctrlTemp
+LiquidLine CtrlTemp_3_L1(1, 0, "Temperatura:");
+LiquidLine CtrlTemp_3_L2(1, 1, temp_ctrl);
 
 LiquidMenu menuInvernadero (lcd, pantallaMenuPrincipal);
 
-uint8_t fcline_menuAnterior = 0;
+uint8_t fcline_menuAnterior = 1;
 
 // ------ Configuración sensor temp/humedad
 SHT2x sht;
@@ -75,17 +86,24 @@ void blankFunction()
     return;
 }
 
-void atras()
+void pantalla_anterior()
 {
-    menuInvernadero.previous_screen();
+    menuInvernadero.previous_screen2();
     menuInvernadero.set_focusedLine(fcline_menuAnterior);
     delay(100);
 }
 
-void Sht21_update(){
+bool Sht21_update(){
   sht.read();
-  temp_sen = sht.getTemperature();
-  hum_sen = sht.getHumidity();
+  unsigned int temp_sen_curr = sht.getTemperature();
+  unsigned int hum_sen_curr = sht.getHumidity();
+  if((temp_sen != temp_sen_curr) || (hum_sen != hum_sen_curr)){
+    temp_sen = temp_sen_curr;
+    hum_sen = hum_sen_curr;
+    return true;
+  }else
+    return false;
+  
 }
 
 void fn_monitorizar()
@@ -97,10 +115,27 @@ void fn_monitorizar()
   else
     strncpy(temp_estado_ctrl_text, string_off, sizeof(string_off));
   menuInvernadero.change_screen(2);
-  //menuInvernadero.set_focusedLine(0);
   delay(100);
 }
 
+void fn_ctrlTemp()
+{
+  fcline_menuAnterior = menuInvernadero.get_focusedLine();
+  if (temp_estado_ctrl)
+    strncpy(temp_estado_ctrl_text, string_on, sizeof(string_on));
+  else
+    strncpy(temp_estado_ctrl_text, string_off, sizeof(string_off));
+  menuInvernadero.change_screen(3);
+  menuInvernadero.set_focusedLine(0);
+  delay(100);
+}
+
+void fn_principal()
+{
+  menuInvernadero.change_screen(1);
+  menuInvernadero.set_focusedLine(fcline_menuAnterior);
+  delay(100);
+}
 
 
 void selectOption(){
@@ -108,7 +143,7 @@ void selectOption(){
     if (menuInvernadero.is_callable(1))
       menuInvernadero.call_function(1);
     else
-      atras();
+      pantalla_anterior();
     menuInvernadero.update();
     delay(100);
   }
@@ -181,7 +216,7 @@ void setup() {
   pantallaMenuPrincipal.add_line(Prin_L4);
 
   Prin_L1.attach_function(1, fn_monitorizar);
-  Prin_L2.attach_function(1, blankFunction);
+  Prin_L2.attach_function(1, fn_ctrlTemp);
   Prin_L3.attach_function(1, blankFunction);
   Prin_L4.attach_function(1, blankFunction);
 
@@ -194,24 +229,31 @@ void setup() {
   pantallaMenuMonitorizar.add_line(Mon_L1_3);
   pantallaMenuMonitorizar.add_line(Mon_L1_4);
   pantallaMenuMonitorizar.add_line(Mon_L2_1);
-  menuInvernadero.add_screen(pantallaMenuMonitorizar);
+  menuInvernadero.add_screen(pantallaMenuMonitorizar); // pantalla 2 
 
   //menuCtrlTemperatura
-  // pantallaCtrlTemperatura.add_line(Prin_L1);
-  // pantallaCtrlTemperatura.add_line(Prin_L2);
-  // pantallaCtrlTemperatura.add_line(Prin_L3);
-  // pantallaCtrlTemperatura.add_line(Prin_L4);
+  pantallaCtrlTemperatura.add_line(CtrlTemp_L1);
+  pantallaCtrlTemperatura.add_line(CtrlTemp_L2);
+  pantallaCtrlTemperatura.add_line(CtrlTemp_L3);
 
-  // Prin_L1.attach_function(1, fn_monitorizar);
-  // Prin_L2.attach_function(1, blankFunction);
-  // Prin_L3.attach_function(1, blankFunction);
-  // Prin_L4.attach_function(1, blankFunction);
+  CtrlTemp_L1.attach_function(1, fn_principal);
+  CtrlTemp_L2.attach_function(1, blankFunction);
+  CtrlTemp_L3.attach_function(1, blankFunction);
 
-  // pantallaMenuPrincipal.set_focusPosition(Position::LEFT);
-  // pantallaMenuPrincipal.set_displayLineCount(2);
-  // menuInvernadero.add_screen(pantallaMenuMonitorizar);
+  pantallaCtrlTemperatura.set_focusPosition(Position::LEFT);
+  pantallaCtrlTemperatura.set_displayLineCount(2);
+  menuInvernadero.add_screen(pantallaCtrlTemperatura); // pantalla 3
 
-  
+  //menuCtrlTemperatura_ctrlStatus
+  pantallaCtrlTemperatura_ctrlTemp.add_line(CtrlTemp_L1);
+  pantallaCtrlTemperatura_ctrlTemp.add_line(CtrlTemp_L2);
+
+  CtrlTemp_L2.attach_function(1, blankFunction);
+  CtrlTemp_L2.attach_function(2, blankFunction);
+
+  // pantallaCtrlTemperatura_ctrlTemp.set_focusPosition(Position::LEFT);
+  // pantallaCtrlTemperatura_ctrlTemp.set_displayLineCount(2);
+  menuInvernadero.add_screen(pantallaCtrlTemperatura_ctrlTemp); // pantalla 3
 
   //sistema de menus
   menuInvernadero.init();
@@ -227,8 +269,8 @@ selectOption();
 
 int C_screen = menuInvernadero.get_currentNumScreen();
 if(C_screen == 1){ // screen Monitorizar
-  Sht21_update();
-  menuInvernadero.update();
+  if(Sht21_update()) // si cambia valores de temp o hum, actualizar pantalla
+    menuInvernadero.update();
 }
 
 if (menuInvernadero.is_callable(1)){
@@ -242,7 +284,7 @@ if (menuInvernadero.is_callable(1)){
     
     menuInvernadero.update();
     oldPosition = newPosition;
-    delay(200);
+    delay(300);
   }
 }
 // if(menuInvernadero.)
