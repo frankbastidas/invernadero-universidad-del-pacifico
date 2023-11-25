@@ -880,6 +880,9 @@ public:
   */
   LiquidScreen* get_currentScreen() const;
 
+  /// Get number currentscreen.
+  uint8_t LiquidMenu::get_currentNumScreen() const;
+
   /// Switches to the next screen.
   void next_screen();
 

@@ -10,22 +10,40 @@
 // ------ Configuración del LCD
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
+// ------ Variables
+unsigned int temp_sen = 0;
+unsigned int hum_sen = 0;
+unsigned int temp_ctrl = 0;
+unsigned int hum_ctrl = 0;
+bool temp_estado_ctrl = false;
+char temp_estado_ctrl_text[4]; // {'O', 'F', 'F', '\0'}
+char string_on[] = "ON";
+char string_off[] = "OFF";
+
 // ------ Configuración de Menus/submenus
+//Menus
+LiquidScreen pantallaMenuPrincipal;
+LiquidScreen pantallaMenuMonitorizar;
+LiquidScreen pantallaCtrlTemperatura;
+LiquidScreen pantallaCtrlLuz;
+LiquidScreen pantallaGrabar;
+
 //menuPrincipal
 LiquidLine Prin_L1(1, 0, "Monitorizar");
 LiquidLine Prin_L2(1, 1, "Control Temp");
 LiquidLine Prin_L3(1, 0, "Control Luz");
 LiquidLine Prin_L4(1, 1, "Grabar");
 
-LiquidScreen pantallaMenuPrincipal;
-LiquidScreen pantallaMenuMonitorizar;
-LiquidScreen pantallaMenuControltemp;
-LiquidScreen pantallaMenuControlLuz;
-LiquidScreen pantallaMenuGrabar;
-
 //menuMonitorizar
-LiquidLine Mon_L1(1, 0, "T: 15");
-LiquidLine Mon_L2(1, 1, "H: 50");
+LiquidLine Mon_L1_1(0, 0, "T:");
+LiquidLine Mon_L1_2(2, 0, temp_sen, "/", temp_ctrl, "\337");
+LiquidLine Mon_L1_3(8, 0, "H:");
+LiquidLine Mon_L1_4(10, 0, hum_sen, "/", hum_ctrl, "%");
+LiquidLine Mon_L2_1(0, 1, "CtrlTemp:  ", temp_estado_ctrl_text);
+
+//menuCtrlTemperatura
+// LiquidLine CtrlTemp_L1(1, 0, "Menu Principal");
+// LiquidLine CtrlTemp_L2(1, 1, "Estado Ctrl:   ", temp_estado_ctrl);
 
 LiquidMenu menuInvernadero (lcd, pantallaMenuPrincipal);
 
@@ -64,13 +82,26 @@ void atras()
     delay(100);
 }
 
+void Sht21_update(){
+  sht.read();
+  temp_sen = sht.getTemperature();
+  hum_sen = sht.getHumidity();
+}
+
 void fn_monitorizar()
 {
   fcline_menuAnterior = menuInvernadero.get_focusedLine();
+  Sht21_update();
+  if (temp_estado_ctrl)
+    strncpy(temp_estado_ctrl_text, string_on, sizeof(string_on));
+  else
+    strncpy(temp_estado_ctrl_text, string_off, sizeof(string_off));
   menuInvernadero.change_screen(2);
   //menuInvernadero.set_focusedLine(0);
   delay(100);
 }
+
+
 
 void selectOption(){
   if(digitalRead(encoderBotonPin)==LOW){
@@ -104,7 +135,7 @@ void setup() {
   delay(500);
   lcd.clear();
 
-  //sht.begin();
+  
 
   // ------ Iniciar Reloj
   RTC.begin();
@@ -113,7 +144,8 @@ void setup() {
   lcd.setCursor(0, 1);
   if (!RTC.isRunning()) 
     lcd.println("Error. Iniciar Sin");
-  lcd.println("Encendido");
+  else
+    lcd.println("Encendido");
   delay(500);
   lcd.clear();
 
@@ -123,9 +155,23 @@ void setup() {
   lcd.setCursor(0, 1);
   if (!SD.begin(chipSelect)) 
     lcd.print("No conectado");
-  lcd.println("Conectado");
+  else
+    lcd.println("Conectado");
   delay(500);
   lcd.clear();
+
+  // ------ Iniciar SD
+  sht.begin();
+  lcd.setCursor(0, 0);
+  lcd.print("Sht21: ");
+  lcd.setCursor(0, 1);
+  if (!sht.isConnected()) 
+    lcd.print("No conectado");
+  else
+    lcd.println("Conectado");
+  delay(500);
+  lcd.clear();
+
 
   // ------ Iniciar menus/submenus
   //menuPrincipal
@@ -142,53 +188,35 @@ void setup() {
   pantallaMenuPrincipal.set_focusPosition(Position::LEFT);
   pantallaMenuPrincipal.set_displayLineCount(2);
 
-  //menuPrincipal
-  pantallaMenuMonitorizar.add_line(Mon_L1);
-  pantallaMenuMonitorizar.add_line(Mon_L2);
-
-  
-  //Mon_L1.attach_function(1, atras);
-  //Mon_L2.attach_function(1, atras);
-
+  //menuMonitorizar
+  pantallaMenuMonitorizar.add_line(Mon_L1_1);
+  pantallaMenuMonitorizar.add_line(Mon_L1_2);
+  pantallaMenuMonitorizar.add_line(Mon_L1_3);
+  pantallaMenuMonitorizar.add_line(Mon_L1_4);
+  pantallaMenuMonitorizar.add_line(Mon_L2_1);
   menuInvernadero.add_screen(pantallaMenuMonitorizar);
 
+  //menuCtrlTemperatura
+  // pantallaCtrlTemperatura.add_line(Prin_L1);
+  // pantallaCtrlTemperatura.add_line(Prin_L2);
+  // pantallaCtrlTemperatura.add_line(Prin_L3);
+  // pantallaCtrlTemperatura.add_line(Prin_L4);
+
+  // Prin_L1.attach_function(1, fn_monitorizar);
+  // Prin_L2.attach_function(1, blankFunction);
+  // Prin_L3.attach_function(1, blankFunction);
+  // Prin_L4.attach_function(1, blankFunction);
+
+  // pantallaMenuPrincipal.set_focusPosition(Position::LEFT);
+  // pantallaMenuPrincipal.set_displayLineCount(2);
+  // menuInvernadero.add_screen(pantallaMenuMonitorizar);
+
+  
+
+  //sistema de menus
   menuInvernadero.init();
   menuInvernadero.set_focusedLine(0);
   menuInvernadero.update();
-
-  /*uint8_t stat = sht.getStatus();
-  lcd.setCursor(7, 1);
-  lcd.print(stat, HEX);*/
-  //Serial.print(stat, HEX);
-
-  /*
-
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Hour Mode : ");
-  lcd.setCursor(0, 1);
-  if (RTC.getHourMode() == CLOCK_H24)
-    lcd.println("24 Hours");
-  else
-    lcd.println("12 Hours");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.print("Is Out Pin Enabled : ");
-  lcd.setCursor(0, 1);
-  if (RTC.isOutPinEnabled())
-    lcd.println("Yes");
-  else
-    lcd.println("No");
-  delay(1000);
-  lcd.setCursor(0, 0);
-  lcd.setCursor(0, 1);
-  lcd.print("Is SQWE Enabled : ");
-  if (RTC.isSqweEnabled())
-    lcd.println("Yes");
-  else
-    lcd.println("No");
-
-  delay(1000);*/
 
   oldPosition = myEncoder.read();
 }
@@ -196,6 +224,13 @@ void setup() {
 void loop() {
 
 selectOption();
+
+int C_screen = menuInvernadero.get_currentNumScreen();
+if(C_screen == 1){ // screen Monitorizar
+  Sht21_update();
+  menuInvernadero.update();
+}
+
 if (menuInvernadero.is_callable(1)){
   long newPosition = myEncoder.read();
   if (newPosition != oldPosition) {
@@ -210,18 +245,11 @@ if (menuInvernadero.is_callable(1)){
     delay(200);
   }
 }
+// if(menuInvernadero.)
   //lcd.setCursor(1, 1);
   //lcd.print(SHT2x_LIB_VERSION);
   //lcd.clear();
-  /* sht.read();
-
-  lcd.setCursor(9, 1);
-  lcd.print("T: ");
-  lcd.print(sht.getTemperature(), 2);
-
-  lcd.setCursor(9, 0);
-  lcd.print("H: ");
-  lcd.print(sht.getHumidity(), 2);
+  /* 
 
   long newPosition = myEnc.read();
   if (newPosition != oldPosition) {

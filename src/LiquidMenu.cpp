@@ -94,6 +94,10 @@ LiquidScreen* LiquidMenu::get_currentScreen() const {
   return _p_liquidScreen[_currentScreen];
 }
 
+uint8_t LiquidMenu::get_currentNumScreen() const {
+  return _currentScreen;
+}
+
 void LiquidMenu::next_screen() {
   _p_liquidCrystal->clear();
   do {
