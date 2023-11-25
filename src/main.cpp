@@ -77,8 +77,8 @@ LiquidLine CtrlLuz_L3(1, 1, "Luz:", luz_estado_ctrl, "\337");
 //menuGrabar
 LiquidLine Grabar_L1(1, 0, "Menu Principal");
 // LiquidLine Grabar_L2(1, 1, "Estado Rec:", luz_estado_ctrl_text);
-LiquidLine Grabar_L3(1, 1, "Temp Rec: ", luz_estado_ctrl, "\337");
-// LiquidLine Grabar_L4(1, 1, "Hum Rec: ", luz_estado_ctrl, "%");
+LiquidLine Grabar_L3(1, 1, "Temp Rec: ", luz_estado_ctrl_text, "\337");
+LiquidLine Grabar_L4(1, 1, "Hum Rec:  ", luz_estado_ctrl_text, "%");
 
 
 LiquidMenu menuInvernadero (lcd, pantallaMenuPrincipal);
@@ -143,7 +143,7 @@ void fn_monitorizar()
   else
     strncpy(temp_estado_ctrl_text, string_off, sizeof(string_off));
   menuInvernadero.change_screen(2);
-  delay(100);
+  // delay(100);
 }
 
 void fn_ctrlTemp()
@@ -155,7 +155,7 @@ void fn_ctrlTemp()
     strncpy(temp_estado_ctrl_text, string_off, sizeof(string_off));
   menuInvernadero.change_screen(3);
   menuInvernadero.set_focusedLine(0);
-  delay(100);
+  // delay(100);
 }
 
 void fn_ctrlLuz()
@@ -167,7 +167,7 @@ void fn_ctrlLuz()
     strncpy(luz_estado_ctrl_text, string_off, sizeof(string_off));
   menuInvernadero.change_screen(4);
   menuInvernadero.set_focusedLine(0);
-  delay(100);
+  // delay(100);
 }
 
 void fn_grabar()
@@ -179,14 +179,14 @@ void fn_grabar()
     strncpy(luz_estado_ctrl_text, string_off, sizeof(string_off));
   menuInvernadero.change_screen(5);
   menuInvernadero.set_focusedLine(0);
-  delay(100);
+  // delay(100);
 }
 
 void fn_principal()
 {
   menuInvernadero.change_screen(1);
   menuInvernadero.set_focusedLine(fcline_menuAnterior);
-  delay(100);
+  // delay(100);
 }
 
 
@@ -334,11 +334,12 @@ void setup() {
   pantallaGrabar.add_line(Grabar_L1);
   // pantallaGrabar.add_line(Grabar_L2);
   pantallaGrabar.add_line(Grabar_L3);
-  // pantallaGrabar.add_line(Grabar_L4);
+  pantallaGrabar.add_line(Grabar_L4);
 
   Grabar_L1.attach_function(1, fn_principal);
   // Grabar_L2.attach_function(1, blankFunction);
   Grabar_L3.attach_function(1, blankFunction);
+  Grabar_L4.attach_function(1, blankFunction);
 
   pantallaGrabar.set_focusPosition(Position::LEFT);
   pantallaGrabar.set_displayLineCount(2);
@@ -373,7 +374,7 @@ if (menuInvernadero.is_callable(1)){
     
     menuInvernadero.update();
     oldPosition = newPosition;
-    delay(300);
+    delay(100);
   }
   if(digitalRead(bt1)==LOW){
     menuInvernadero.switch_focus(true);
